@@ -1,7 +1,8 @@
 [build]
-  command = "cd frontend && npm install && npm run build"
+  base = "/"
+  command = "npm install --prefix frontend && npm run build --prefix frontend"
   publish = "frontend/dist"
 
 [dev]
-  command = "cd frontend && npm run dev"
+  command = "npm run dev --prefix frontend"
   port = 5173
