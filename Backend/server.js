@@ -17,14 +17,20 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
-if (process.env.NODE_ENV !== "production") {
-	app.use(
-		cors({
-			origin: "http://localhost:5173",
-			credentials: true,
-		})
-	);
-}
+// CORS configuration
+const allowedOrigins = [
+	"http://localhost:5173",
+	"http://localhost:3000",
+	"https://kajalraj11.github.io",
+	process.env.CLIENT_URL
+].filter(Boolean);
+
+app.use(
+	cors({
+		origin: allowedOrigins,
+		credentials: true,
+	})
+);
 
 app.use(express.json({ limit: "5mb" })); // parse JSON request bodies
 app.use(cookieParser());
