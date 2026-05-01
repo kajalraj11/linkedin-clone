@@ -3,14 +3,14 @@ services:
     name: linkedin-clone-backend
     runtime: node
     plan: free
-    buildCommand: cd backend && npm install
-    startCommand: node backend/server.js
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: PORT
         value: 10000
       - key: NODE_ENV
         value: production
-      - key: MONGODB_URI
+      - key: MONGO_URI
         sync: false
       - key: MAILTRAP_TOKEN
         sync: false
@@ -22,15 +22,9 @@ services:
         sync: false
       - key: CLOUDINARY_CLOUD_NAME
         sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: EMAIL_FROM_NAME
+        sync: false
       - key: CLIENT_URL
         value: https://kajalraj11.github.io/linkedin-clone
-
-  - type: web
-    name: linkedin-clone-frontend
-    runtime: node
-    plan: free
-    buildCommand: cd frontend && npm install && npm run build
-    startCommand: npx serve -s frontend/dist -l 3000
-    envVars:
-      - key: VITE_API_URL
-        value: https://linkedin-clone-backend.onrender.com
