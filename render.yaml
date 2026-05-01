@@ -3,9 +3,8 @@ services:
     name: linkedin-clone-backend
     runtime: node
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
-    rootDir: .
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     envVars:
       - key: PORT
         value: 10000
