@@ -3,6 +3,13 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {sendWelcomeEmail} from "../emails/emailHandlers.js";
 
+const cookieOptions = {
+   httpOnly: true,
+   maxAge: 1000 * 60 * 60 * 24 * 3, // 3 days
+   sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+   secure: process.env.NODE_ENV === "production",
+};
+
 export const signup = async(req, res) =>{
    try{
      const {name, username, email, password} = req.body;
@@ -27,12 +34,7 @@ export const signup = async(req, res) =>{
      await user.save();
 
      const token = jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn: "3d"});
-     res.cookie("jwt-linkedin", token, {
-         httpOnly: true, // prevent xss attack
-         maxAge: 1000 * 60 * 60 * 24 * 3 ,// 3 days
-         sameSite : "strict", // prevent csrf attack
-         secure: process.env.NODE_ENV === "production" // prevent man-in-the middle attack
-     });
+     res.cookie("jwt-linkedin", token, cookieOptions);
      res.status(201).json({message: "User created successfully"});
       // postman -> http://localhost:5000/api/v1/auth/signup
 
@@ -69,12 +71,7 @@ export const login = async (req, res) => {
 
 		// Create and send token
 		const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "3d" });
-		await res.cookie("jwt-linkedin", token, {
-			httpOnly: true,
-			maxAge: 3 * 24 * 60 * 60 * 1000,
-			sameSite: "strict",
-			secure: process.env.NODE_ENV === "production",
-		});
+		await res.cookie("jwt-linkedin", token, cookieOptions);
 
 		res.json({ message: "Logged in successfully" });
 	} catch (error) {
@@ -84,7 +81,7 @@ export const login = async (req, res) => {
 };
 
  export const logout = (req, res) =>{
-    res.clearCookie("jwt-linkedin");
+    res.clearCookie("jwt-linkedin", cookieOptions);
     res.json({message: "Logged out successfully"});
  }
 
